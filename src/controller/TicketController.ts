@@ -1,31 +1,39 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from "@nestjs/common";
+import { Controller, Get, Post, Put, Delete, Param, Body, HttpStatus, HttpCode } from "@nestjs/common";
 import { CreateTicketDto } from "src/dto/CreateTicketDto";
 import { UpdateTicketDto } from "src/dto/UpdateTicketDto";
+import { TicketRepository } from "src/repository/TicketRepository";
 
 @Controller("api/ticket")
 export class TicketController {
-    @Post()
-    createTicket(@Body() createTicketDto: CreateTicketDto) {
+    constructor(private ticketRepository: TicketRepository) { }
 
+    @Post()
+    async createTicket(@Body() createTicketDto: CreateTicketDto) {
+        return await this.ticketRepository.create(createTicketDto);
     }
 
     @Get(":id")
-    getTicket(@Param("id") id: string) {
-
+    async getTicket(@Param("id") id: string) {
+        return await this.ticketRepository.findOne(id);
     }
 
     @Put(":id")
-    updateTicket(@Param("id") id: string, @Body() updateTicketDto: UpdateTicketDto) {
-
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async updateTicket(
+        @Param("id") id: string,
+        @Body() updateTicketDto: UpdateTicketDto
+    ) {
+        await this.ticketRepository.update(id, updateTicketDto);
     }
 
     @Get()
-    getAllTickets() {
-
+    async getAllTickets() {
+        return await this.ticketRepository.findAll();
     }
 
     @Delete(":id")
-    deleteTicket(@Param("id") id: string) {
-
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async deleteTicket(@Param("id") id: string) {
+        await this.ticketRepository.delete(id);
     }
 }

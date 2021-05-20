@@ -3,6 +3,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { TicketController } from './controller/TicketController';
 import { Ticket, TicketSchema } from './model/Ticket';
 import { AuthMiddleware } from '@gticketing-common/common';
+import { TicketRepository } from './repository/TicketRepository';
 
 @Module({
     imports: [
@@ -10,7 +11,7 @@ import { AuthMiddleware } from '@gticketing-common/common';
         MongooseModule.forFeature([{ name: Ticket.name, schema: TicketSchema }])
     ],
     controllers: [TicketController],
-    providers: [],
+    providers: [TicketRepository],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
